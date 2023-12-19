@@ -9,7 +9,7 @@ import (
 	"unicode"
 )
 
-func main()  {
+func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/validate", validateHandler)
 
@@ -19,7 +19,7 @@ func main()  {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("./index.html")
+	tmpl, err := template.ParseFiles("static/index.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -28,7 +28,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func validateHandler(w http.ResponseWriter, r *http.Request)  {
+func validateHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -38,7 +38,7 @@ func validateHandler(w http.ResponseWriter, r *http.Request)  {
 
 	isValid := luhnAlgorithm(cardNumber)
 
-	tmpl, err := template.ParseFiles("./index.html")
+	tmpl, err := template.ParseFiles("static/index.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -46,7 +46,7 @@ func validateHandler(w http.ResponseWriter, r *http.Request)  {
 	tmpl.Execute(w, map[string]interface{}{"CardNumber": cardNumber, "Result": getResultMessage(isValid)})
 }
 
-func luhnAlgorithm(cardNumber string) bool  {
+func luhnAlgorithm(cardNumber string) bool {
 	var ss string
 	for _, r := range cardNumber {
 		if !unicode.IsSpace(r) {
@@ -68,7 +68,7 @@ func luhnAlgorithm(cardNumber string) bool  {
 		if int64(i)%2 != int64(parity) {
 			sum += int64(item)
 		} else if item > 4 {
-			sum += int64(2 * item - 9)
+			sum += int64(2*item - 9)
 		} else {
 			sum += int64(2 * item)
 		}
@@ -80,7 +80,7 @@ func luhnAlgorithm(cardNumber string) bool  {
 		fmt.Println(err)
 		return false
 	}
-	SumMod := sum%10
+	SumMod := sum % 10
 
 	if SumMod == int64(0) {
 		return SumMod == int64(checkDigit)
